@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
+
+    <title>Restaurant Menu & Cart</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #d3a8cf;
+        }
+
+        .master-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .menu-category {
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            color: #ffffff;
+            background-color: #118a26;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .menu-item-details {
+            flex-grow: 1;
+        }
+
+        .menu-item-name {
+            font-weight: 500;
+        }
+
+        .menu-item-price {
+            color: #FF8413;
+            font-weight: bold;
+        }
+
+        .menu-item-discount {
+            color: #4CAF50;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .add-btn {
+            background-color: #FF8413;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .add-btn:hover {
+            background-color: #e67300;
+        }
+
+        .product {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product>div:first-of-type {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .product span {
+            font-weight: 500;
+        }
+
+        .product p {
+            margin: 5px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .quantity button {
+            background-color: #f5f5f5;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .quantity label {
+            margin: 0 10px;
+        }
+
+        .price {
+            font-weight: bold;
+        }
+
+        .form {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .input_field {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .form button {
+            background-color: #FF8413;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            row-gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkout--footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .price {
+            font-size: 18px;
+        }
+
+        .checkout-btn {
+            background-color: #FF8413;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .checkout-btn:hover {
+            background-color: #e67300;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        /* Fixed width issues */
+        #checkout-customer {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .order-section {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .customer-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .order-details-container {
+            width: 100%;
+        }
+
+        .col-4 {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .master-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #cus-addbtn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: rgb(198, 231, 9);
+            color: #000;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #cus-addbtn:hover {
+            background-color: rgb(180, 210, 5);
+            transform: scale(1.03);
+        }
+
+        .category-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .category-grid button {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .category-grid button:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+
+        .category-grid button:active {
+            transform: translateY(0);
+            background: #dee2e6;
+        }
+
+        .category-grid button i {
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="interface.html"><button type="button" class="btn-close" aria-label="Close"></button></a><br>
+
+
+    <div class="master-container">
+        <div class="card menu">
+            <div class="category-grid">
+                <a href="#burger"><button><i class="fa-solid fa-burger"></i> Burger</button></a>
+                <a href="#french-frice"><button><i class="fa-solid fa-french-fries"></i> French Fries</button></a>
+                <a href="#chicken"><button><i class="fa-solid fa-drumstick-bite"></i> Chicken</button></a>
+                <a href="#pasta"><button><i class="fa-solid fa-bowl-food"></i> Pasta</button></a>
+                <a href="#Submarines"><button><i class="fa-solid fa-sandwich"></i> Submarines</button></a>
+                <a href="#Beverages"><button><i class="fa-solid fa-glass-water"></i> Beverages</button></a>
+            </div>
+
+
+            <label class="title">Restaurant Menu</label>
+
+            <div class="menu-category">
+                <div class="category-title" id="burger">Burgers</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Classic Burger (Large)</div>
+                        <div class="menu-item-code">B1001</div>
+                    </div>
+                    <div class="menu-item-price">රු.750.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Classic Burger (Regular)</div>
+                        <div class="menu-item-code">B1002</div>
+                    </div>
+                    <div class="menu-item-price">රු.1500.00 <span class="menu-item-discount">15% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Turkey Burger</div>
+                        <div class="menu-item-code">B1003</div>
+                    </div>
+                    <div class="menu-item-price">රු.1600.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Chicken Burger (Regular)</div>
+                        <div class="menu-item-code">B1005</div>
+                    </div>
+                    <div class="menu-item-price">රු.800.00 <span class="menu-item-discount">20% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Bacon Burger</div>
+                        <div class="menu-item-code">B1008</div>
+                    </div>
+                    <div class="menu-item-price">රු.650.00 <span class="menu-item-discount">15% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <div class="category-title" id="french-frice">French Fries</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Steak Fries (Large)</div>
+                        <div class="menu-item-code">B1025</div>
+                    </div>
+                    <div class="menu-item-price">රු.1200.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">French Fries (Large)</div>
+                        <div class="menu-item-code">B1027</div>
+                    </div>
+                    <div class="menu-item-price">රු.800.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">French Fries (Small)</div>
+                        <div class="menu-item-code">B1029</div>
+                    </div>
+                    <div class="menu-item-price">රු.450.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Sweet Potato Fries (Large)</div>
+                        <div class="menu-item-code">B1030</div>
+                    </div>
+                    <div class="menu-item-price">රු.600.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+            </div>
+
+            <div class="menu-category">
+                <div class="category-title" id="Submarines">Submarines</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Crispy Chicken Submarine (Large)</div>
+                        <div class="menu-item-code">B1016</div>
+                    </div>
+                    <div class="menu-item-price">රු.2000.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Chicken Submarine (Large)</div>
+                        <div class="menu-item-code">B1018</div>
+                    </div>
+                    <div class="menu-item-price">රු.1800.00 <span class="menu-item-discount">3% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Double Cheese n Chicken Submarine</div>
+                        <div class="menu-item-code">B1022</div>
+                    </div>
+                    <div class="menu-item-price">රු.1900.00 <span class="menu-item-discount">16% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Special Horgie Submarine</div>
+                        <div class="menu-item-code">B1023</div>
+                    </div>
+                    <div class="menu-item-price">රු.2800.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">MOS Special Submarine</div>
+                        <div class="menu-item-code">B1024</div>
+                    </div>
+                    <div class="menu-item-price">රු.3000.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Grinder Submarine</div>
+                        <div class="menu-item-code">B1020</div>
+                    </div>
+                    <div class="menu-item-price">රු.2300.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <div class="category-title" id="pasta">Pasta</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Chicken n Cheese Pasta</div>
+                        <div class="menu-item-code">B1031</div>
+                    </div>
+                    <div class="menu-item-price">රු.1600.00 <span class="menu-item-discount">15% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Ground Turkey Pasta Bake</div>
+                        <div class="menu-item-code">B1033</div>
+                    </div>
+                    <div class="menu-item-price">රු.2900.00 <span class="menu-item-discount">10% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Creamy Shrimp Pasta</div>
+                        <div class="menu-item-code">B1034</div>
+                    </div>
+                    <div class="menu-item-price">රු.2000.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Lemon Butter Pasta</div>
+                        <div class="menu-item-code">B1035</div>
+                    </div>
+                    <div class="menu-item-price">රු.1950.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <div class="category-title" id="chicken">Chicken</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Fried Chicken (Regular)</div>
+                        <div class="menu-item-code">B1039</div>
+                    </div>
+                    <div class="menu-item-price">රු.2300.00 <span class="menu-item-discount">10% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Fried Chicken (Small)</div>
+                        <div class="menu-item-code">B1038</div>
+                    </div>
+                    <div class="menu-item-price">රු.1200.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">BBQ Chicken (Regular) </div>
+                        <div class="menu-item-code">B1043</div>
+                    </div>
+                    <div class="menu-item-price">රු.2100.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Hot Wings (Large)</div>
+                        <div class="menu-item-code">B1041</div>
+                    </div>
+                    <div class="menu-item-price">රු.2400.00 </div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <div class="category-title" id="Beverages">Beverages</div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Coca-Cola (330ml) </div>
+                        <div class="menu-item-code">B1045</div>
+                    </div>
+                    <div class="menu-item-price">රු.1230.00</div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Pepsi (330ml)</div>
+                        <div class="menu-item-code">B1044</div>
+                    </div>
+                    <div class="menu-item-price">රු.990.00 <span class="menu-item-discount">5% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-details">
+                        <div class="menu-item-name">Miranda (330ml)</div>
+                        <div class="menu-item-code">B1047</div>
+                    </div>
+                    <div class="menu-item-price">රු.850.00 <span class="menu-item-discount">7% off</span></div>
+                    <button class="add-btn">Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card cart">
+            <label class="title">Your cart</label>
+            <div class="products" id="cart-products">
+                <div class="empty-cart">Your cart is empty. Add items from the menu!</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card coupons">
+                <label class="title">Apply coupons</label>
+                <form class="form">
+                    <input type="text" placeholder="Apply your coupons here" class="input_field" id="coupon-input">
+                    <button type="submit">Apply</button>
+                </form>
+            </div>
+            <br>
+
+            <div id="checkout-customer">
+                <div class="card checkout">
+                    <div class="order-section">
+                        <h5 class="fw-bold mb-3">Order Details</h5>
+
+                        <!-- Order Content -->
+                        <div class="order-details-container">
+                            <!-- Order ID and Date -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-semibold">Order ID:</span>
+                                    <span id="orderId">OR#0001</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-semibold">Date:</span>
+                                    <span id="digital-clock"></span>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Customer Information -->
+                            <div class="mb-3">
+                                <h6 class="fw-bold">Customer Information
+                                    <button id="cus-addbtn" class="fa-solid fa-plus"></i></button>
+                                </h6>
+                                <div class="mb-2">
+                                    <input type="text" class="form-control customer-input"
+                                        placeholder="Enter Phone Number">
+                                </div>
+                                <div class="mb-2">
+                                    <input type="text" class="form-control customer-input" placeholder="Customer Name">
+                                </div>
+                                <div class="mb-2">
+                                    <input type="email" class="form-control customer-input"
+                                        placeholder="Customer Email">
+                                </div>
+                            </div>
+
+                            <hr>
+                        </div>
+
+                        <label class="title">Checkout</label>
+                        <div class="details">
+                            <span>Your cart subtotal:</span>
+                            <span id="subtotal">රු.0.00</span>
+                            <span>Discount through applied coupons:</span>
+                            <span id="coupon-discount">රු.0.00</span>
+                            <span>Handling fees:</span>
+                            <span id="shipping">රු.50.00</span>
+                        </div>
+                        <div class="checkout--footer">
+                            <label class="price"><sup>රු</sup><span id="total">50.00</span></label>
+                            <a href="orderdetails.html"><button class="checkout-btn">Place Order</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+
+    <script src="/JS/burger.js"></script>
+</body>
+
+</html>
